@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate & Reply</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rate & Reply</h1>
+            <p>AI-powered conversation analysis and response generation</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <h2>Share your conversation</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="text">Text</button>
+                    <button class="tab-btn" data-tab="image">Image</button>
+                </div>
+                
+                <div class="tab-content active" id="text-tab">
+                    <textarea id="conversation-text" placeholder="Paste your conversation here..."></textarea>
+                </div>
+                
+                <div class="tab-content" id="image-tab">
+                    <div class="upload-area" id="upload-area">
+                        <p>Drag and drop an image or</p>
+                        <label for="image-upload" class="upload-btn">Choose File</label>
+                        <input type="file" id="image-upload" accept="image/*" hidden>
+                    </div>
+                    <div class="image-preview" id="image-preview"></div>
+                </div>
+                
+                <button id="analyze-btn" class="primary-btn">Analyze</button>
+            </section>
+
+            <section class="results-section" id="results-section">
+                <div class="analysis-card">
+                    <h2>Analysis</h2>
+                    <div class="sentiment">
+                        <h3>Sentiment</h3>
+                        <div class="sentiment-meter">
+                            <div class="sentiment-value" id="sentiment-value"></div>
+                        </div>
+                    </div>
+                    <div class="thoughts">
+                        <h3>Their Thoughts</h3>
+                        <p id="thoughts-content">Analysis will appear here after processing.</p>
+                    </div>
+                </div>
+
+                <div class="replies-card">
+                    <h2>Suggested Replies</h2>
+                    <div class="replies-container" id="replies-container">
+                        <div class="reply">
+                            <p>Replies will appear here after analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Created with ❤️ • Privacy focused • No conversations are stored</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
