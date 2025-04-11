@@ -1,0 +1,73 @@
+/**result.wxss**/
+.header {
+  margin-bottom: 40rpx;
+}
+
+.sentiment-section {
+  margin-bottom: 30rpx;
+}
+
+.sentiment-meter {
+  height: 20rpx;
+  background-color: var(--light-gray);
+  border-radius: 10rpx;
+  margin-bottom: 10rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.sentiment-value {
+  position: absolute;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #ff3b30, #ffcc00, #34c759);
+  border-radius: 10rpx;
+}
+
+.sentiment-labels {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sentiment-label {
+  font-size: 24rpx;
+  color: var(--dark-gray);
+}
+
+.thoughts {
+  color: var(--text-color);
+  line-height: 1.6;
+  margin-bottom: 30rpx;
+}
+
+.replies-list {
+  margin-bottom: 20rpx;
+}
+
+.reply-item {
+  padding: 20rpx;
+  background-color: var(--light-gray);
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+  line-height: 1.5;
+}
+
+.reply-item.selected {
+  background-color: rgba(0, 113, 227, 0.1);
+  border: 1rpx solid var(--primary-color);
+}
+
+.actions {
+  margin-top: 40rpx;
+  text-align: center;
+}
+
+.secondary-btn {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1rpx solid var(--primary-color);
+  border-radius: 40rpx;
+  padding: 16rpx 0;
+  font-size: 32rpx;
+  width: 100%;
+} 

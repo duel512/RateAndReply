@@ -1,0 +1,39 @@
+<!--result.wxml-->
+<view class="container">
+  <view class="header">
+    <view class="title text-center">分析结果</view>
+  </view>
+
+  <!-- 情感分析卡片 -->
+  <view class="card">
+    <view class="title">情感分析</view>
+    <view class="sentiment-section">
+      <view class="sentiment-meter">
+        <view class="sentiment-value" style="width: {{sentiment}}%;"></view>
+      </view>
+      <view class="sentiment-labels">
+        <view class="sentiment-label">消极</view>
+        <view class="sentiment-label">中立</view>
+        <view class="sentiment-label">积极</view>
+      </view>
+    </view>
+    
+    <view class="subtitle mt-20">对方想法</view>
+    <view class="thoughts">{{thoughts}}</view>
+  </view>
+
+  <!-- 回复建议卡片 -->
+  <view class="card">
+    <view class="title">建议回复</view>
+    <view class="replies-list">
+      <view wx:for="{{replies}}" wx:key="index" class="reply-item {{selectedReply === index ? 'selected' : ''}}" bindtap="selectReply" data-index="{{index}}">
+        {{item}}
+      </view>
+    </view>
+    <button class="primary-btn mt-20" disabled="{{selectedReply === null}}" bindtap="copyReply">复制选中的回复</button>
+  </view>
+  
+  <view class="actions">
+    <button class="secondary-btn" bindtap="goBack">返回重新分析</button>
+  </view>
+</view> 
