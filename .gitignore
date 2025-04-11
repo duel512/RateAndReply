@@ -1,0 +1,19 @@
+# 敏感配置文件
+utils/config.js
+
+# 示例测试文件
+test_*.txt
+test_*.js
+
+# 微信开发者工具临时文件
+node_modules/
+miniprogram_npm/
+.DS_Store
+.idea
+.vscode
+
+# 用户私人配置
+project.private.config.json
+
+# 日志
+*.log 

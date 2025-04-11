@@ -1,5 +1,7 @@
 const app = getApp()
-const api = require('../../utils/api.js')
+// 使用API管理器替代直接的API
+const apiManager = require('../../utils/api_manager.js')
+const modelConfig = require('../../utils/gemini_api.js')
 
 Page({
   data: {
@@ -7,7 +9,8 @@ Page({
     conversationText: '',
     tempImagePath: '',
     canAnalyze: false,
-    useMockData: false // 是否使用模拟数据
+    useMockData: false, // 是否使用模拟数据
+    currentModel: 'yuanqi' // 当前使用的模型
   },
 
   onLoad: function () {
@@ -16,8 +19,23 @@ Page({
     
     // 强制使用实际API，不使用模拟数据
     this.setData({
-      useMockData: false
+      useMockData: false,
+      currentModel: modelConfig.getModel() // 获取存储的模型配置
     });
+  },
+
+  // 切换模型
+  switchModel: function(e) {
+    const model = e.currentTarget.dataset.model;
+    if (modelConfig.setModel(model)) {
+      this.setData({
+        currentModel: model
+      });
+      wx.showToast({
+        title: `已切换到${model === 'yuanqi' ? '腾讯元启' : 'Google Gemini'}`,
+        icon: 'none'
+      });
+    }
   },
 
   // 检查剪贴板
@@ -127,8 +145,8 @@ Page({
       return;
     }
     
-    // 否则调用实际的API
-    api.analyzeConversation(this.data.conversationText)
+    // 使用API管理器，根据当前设置选择合适的API
+    apiManager.analyzeConversation(this.data.conversationText)
       .then(result => {
         // 将分析结果存储到全局数据
         app.globalData.analysisResult = result;

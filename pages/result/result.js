@@ -26,16 +26,18 @@ Page({
       return
     }
     
+    console.log('展示分析结果:', JSON.stringify(result));
+    
     // 动画显示情感值
     this.setData({
       thoughts: result.thoughts,
-      replies: result.replies
+      replies: result.replies || []
     })
     
     // 使用动画效果显示情感值
     setTimeout(() => {
       this.setData({
-        sentiment: result.sentiment
+        sentiment: result.sentiment || 50
       })
     }, 300)
   },

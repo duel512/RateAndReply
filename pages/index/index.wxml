@@ -5,6 +5,15 @@
     <view class="subtitle text-center text-gray">AI聊天分析与回复生成</view>
   </view>
 
+  <!-- 模型选择器 -->
+  <view class="model-selector">
+    <view class="selector-label">选择分析模型：</view>
+    <view class="selector-options">
+      <view class="{{currentModel === 'yuanqi' ? 'model-option active' : 'model-option'}}" bindtap="switchModel" data-model="yuanqi">腾讯元启</view>
+      <view class="{{currentModel === 'gemini' ? 'model-option active' : 'model-option'}}" bindtap="switchModel" data-model="gemini">Google Gemini</view>
+    </view>
+  </view>
+
   <view class="card">
     <view class="title">分享您的对话</view>
     

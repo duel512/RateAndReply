@@ -23,7 +23,15 @@ function analyzeConversation(conversationText, userId = config.yuanqi.userId) {
           content: [
             {
               type: "text",
-              text: `请分析以下聊天对话，判断对方对我的感情和目前的想法，并给出3个最佳回复建议:\n\n${conversationText}`
+              text: `请分析以下聊天对话，判断对方对我的感情和目前的想法，并给出至少2个最佳回复建议。
+请按照以下格式回复：
+[互动热度]:75
+[情感分析]:对方的情感分析内容
+[回复1]:第一条建议回复
+[回复2]:第二条建议回复
+[回复3]:第三条建议回复（如果有）
+
+聊天内容：${conversationText}`
             }
           ]
         }
@@ -90,49 +98,86 @@ function analyzeConversation(conversationText, userId = config.yuanqi.userId) {
 function processAPIResponse(responseText) {
   console.log('处理API响应文本:', responseText.substring(0, 300) + '...');
   
-  // 这里需要根据实际API返回的格式来解析
-  // 此处为示例解析逻辑
-  let sentiment = 50; // 默认中等情感值
-  let thoughts = '';
-  const replies = [];
+  // 默认值 - 根据要求，如果没有互动热度，默认为50
+  let sentiment = 50; 
+  let thoughts = '无法确定对方的具体想法，需要更多对话内容。';
+  const replies = [
+    "很高兴收到你的消息，能告诉我更多关于你最近在做什么吗？",
+    "谢谢分享，我很想了解更多你的想法。",
+    "这很有趣，我们可以继续聊聊这个话题吗？"
+  ];
 
   try {
-    // 假设API返回的是结构化或半结构化的文本
-    // 解析情感部分 - 寻找可能包含情感指标的段落
-    if (responseText.includes('积极') || responseText.includes('喜欢')) {
-      sentiment = 75;
-    } else if (responseText.includes('消极') || responseText.includes('不感兴趣')) {
-      sentiment = 25;
-    }
-
-    // 提取想法分析
-    const thoughtsMatch = responseText.match(/想法[：:](.*?)(?=建议|回复|$)/s);
-    if (thoughtsMatch && thoughtsMatch[1]) {
-      thoughts = thoughtsMatch[1].trim();
-    } else {
-      // 如果没有明确标记，尝试提取第一段
-      const paragraphs = responseText.split('\n\n');
-      if (paragraphs.length > 0) {
-        thoughts = paragraphs[0].trim();
-      }
-    }
-
-    // 提取回复建议
-    const repliesMatch = responseText.match(/回复[：:](.*?)(?=$)/s);
-    if (repliesMatch && repliesMatch[1]) {
-      const repliesText = repliesMatch[1].trim();
-      const repliesLines = repliesText.split(/\d+[\.、]/).filter(line => line.trim().length > 0);
+    // 检查是否为结构化格式 [xxx]:
+    const hasStructuredFormat = responseText.match(/\[\w+\]:/);
+    
+    if (hasStructuredFormat) {
+      console.log('使用结构化格式解析');
       
-      repliesLines.forEach(line => {
-        if (line.trim().length > 0) {
-          replies.push(line.trim());
+      // 提取互动热度 - 如果没有则保持默认值50
+      const sentimentMatch = responseText.match(/\[互动热度\]:\s*(\d+)/);
+      if (sentimentMatch && sentimentMatch[1]) {
+        const value = parseInt(sentimentMatch[1]);
+        if (!isNaN(value) && value >= 0 && value <= 100) {
+          sentiment = value;
         }
-      });
-    }
+      }
 
-    // 确保至少有3个回复建议
-    while (replies.length < 3) {
-      replies.push("请继续交流，了解更多信息");
+      // 提取情感分析 - 直接绑定到"对方想法"部分
+      const thoughtsMatch = responseText.match(/\[情感分析\]:\s*([\s\S]*?)(?=\[回复1\]|$)/);
+      if (thoughtsMatch && thoughtsMatch[1]) {
+        thoughts = thoughtsMatch[1].trim();
+      }
+
+      // 提取三个建议回复
+      const reply1Match = responseText.match(/\[回复1\]:\s*([\s\S]*?)(?=\[回复2\]|$)/);
+      const reply2Match = responseText.match(/\[回复2\]:\s*([\s\S]*?)(?=\[回复3\]|$)/);
+      const reply3Match = responseText.match(/\[回复3\]:\s*([\s\S]*?)(?=\[|$)/);
+
+      if (reply1Match && reply1Match[1]) {
+        replies[0] = reply1Match[1].trim();
+      }
+      if (reply2Match && reply2Match[1]) {
+        replies[1] = reply2Match[1].trim();
+      }
+      if (reply3Match && reply3Match[1]) {
+        replies[2] = reply3Match[1].trim();
+      }
+    } else {
+      // 非结构化格式解析 - 回退到旧的处理逻辑
+      console.log('使用非结构化格式解析');
+      
+      // 解析情感部分 - 寻找可能包含情感指标的段落
+      if (responseText.includes('积极') || responseText.includes('喜欢')) {
+        sentiment = 75;
+      } else if (responseText.includes('消极') || responseText.includes('不感兴趣')) {
+        sentiment = 25;
+      }
+
+      // 提取想法分析
+      const thoughtsMatch = responseText.match(/想法[：:](.*?)(?=建议|回复|$)/s);
+      if (thoughtsMatch && thoughtsMatch[1]) {
+        thoughts = thoughtsMatch[1].trim();
+      } else {
+        // 如果没有明确标记，尝试提取第一段
+        const paragraphs = responseText.split('\n\n');
+        if (paragraphs.length > 0) {
+          thoughts = paragraphs[0].trim();
+        }
+      }
+
+      // 提取回复建议
+      const repliesMatch = responseText.match(/回复[：:](.*?)(?=$)/s);
+      if (repliesMatch && repliesMatch[1]) {
+        const repliesText = repliesMatch[1].trim();
+        const repliesLines = repliesText.split(/\d+[\.、]/).filter(line => line.trim().length > 0);
+        
+        repliesLines.forEach((line, index) => {
+          if (line.trim().length > 0 && index < 3) {
+            replies[index] = line.trim();
+          }
+        });
+      }
     }
 
   } catch (error) {
@@ -141,12 +186,8 @@ function processAPIResponse(responseText) {
 
   const result = {
     sentiment,
-    thoughts: thoughts || '无法确定对方的具体想法，需要更多对话内容。',
-    replies: replies.length > 0 ? replies.slice(0, 3) : [
-      "很高兴收到你的消息，能告诉我更多关于你最近在做什么吗？",
-      "谢谢分享，我很想了解更多你的想法。",
-      "这很有趣，我们可以继续聊聊这个话题吗？"
-    ]
+    thoughts,
+    replies: replies.slice(0, 3) // 确保只返回最多3条建议回复
   };
   
   console.log('处理结果:', JSON.stringify(result));

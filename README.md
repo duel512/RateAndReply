@@ -55,4 +55,15 @@ RateAndReply/
 
 - 更详细的情感分析
 - 上下文感知的回复生成
-- 支持多种聊天平台的对话分析 
+- 支持多种聊天平台的对话分析
+
+## 配置说明
+
+本项目需要配置API密钥才能正常工作。请按照以下步骤设置：
+
+1. 在`utils`目录下，将`config.example.js`复制为`config.js`
+2. 在`config.js`中填入您的API密钥和相关配置信息：
+   - 腾讯元启API配置（必需）
+   - Google Gemini API配置（可选，用于切换模型）
+
+**注意**：`config.js`文件包含敏感信息，已被添加到`.gitignore`中，不会提交到Git仓库。 
